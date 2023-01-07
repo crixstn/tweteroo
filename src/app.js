@@ -6,6 +6,7 @@ app.use(cors())
 app.use(json())
 
 const sign = []
+const tweets = []
 
 app.post("/sign-up", (req, res) => {
     const user = req.body
@@ -20,6 +21,22 @@ app.post("/sign-up", (req, res) => {
     }
 
     sign.push(user)
+    res.sendStatus(200)
+})
+
+app.post("/tweets", (req, res) => {
+    const tweet = req.body
+
+    const verifyLogin = sign.find(item => item.username == tweet.username)
+    if(!verifyLogin){
+        return res.sendStatus(401)
+    }
+
+    if(!tweet.username || !tweet.tweet){
+        return res.status(422).send("Please fill in all spaces :D")
+    } 
+
+    tweets.push(tweet)
     res.sendStatus(200)
 })
 
