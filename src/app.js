@@ -8,6 +8,8 @@ app.use(json())
 const sign = []
 const tweets = []
 
+
+
 app.post("/sign-up", (req, res) => {
     const user = req.body
 
@@ -25,23 +27,36 @@ app.post("/sign-up", (req, res) => {
 })
 
 app.post("/tweets", (req, res) => {
-    const tweet = req.body
+    const body = req.body
+
+    const tweet = {
+        username: body.username,
+        avatar: sign.find(item => item.username === body.username).avatar,
+        tweet: body.tweet
+    }
 
     const verifyLogin = sign.find(item => item.username == tweet.username)
+
     if(!verifyLogin){
         return res.sendStatus(401)
     }
 
     if(!tweet.username || !tweet.tweet){
         return res.status(422).send("Please fill in all spaces :D")
-    } 
+    }
 
     tweets.push(tweet)
     res.sendStatus(200)
 })
 
-app.get("/", (req, res) => {
-    res.send("i am ok!")
+app.get("/tweets", (req, res) => {
+    const { posts } = req.query
+
+    const reverse = [...tweets].reverse()
+
+    const lastTweets = reverse.slice(0, parseInt(posts))
+
+    res.send(lastTweets)
 })
 
 const PORT = 5000
