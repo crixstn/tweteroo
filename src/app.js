@@ -8,8 +8,6 @@ app.use(json())
 const sign = []
 const tweets = []
 
-
-
 app.post("/sign-up", (req, res) => {
     const user = req.body
 
@@ -27,13 +25,7 @@ app.post("/sign-up", (req, res) => {
 })
 
 app.post("/tweets", (req, res) => {
-    const body = req.body
-
-    const tweet = {
-        username: body.username,
-        avatar: sign.find(item => item.username === body.username).avatar,
-        tweet: body.tweet
-    }
+    const tweet = req.body
 
     const verifyLogin = sign.find(item => item.username == tweet.username)
 
@@ -50,11 +42,26 @@ app.post("/tweets", (req, res) => {
 })
 
 app.get("/tweets", (req, res) => {
-    const { posts } = req.query
+    
+    const tweet = []
 
-    const reverse = [...tweets].reverse()
+    for(let i = 0; i < tweets.length; i++){
+        const tweetData = tweets[i]
 
-    const lastTweets = reverse.slice(0, parseInt(posts))
+        const bodyTweet = {
+            username: tweetData.username,
+            tweet: tweetData.tweet,
+            avatar: sign.find(item => item.username === tweetData.username).avatar
+        }
+
+        tweet.push(bodyTweet)
+    }
+
+    const numTweets = 10
+
+    const reverse = [...tweet].reverse()
+
+    const lastTweets = reverse.slice(0, parseInt(numTweets))
 
     res.send(lastTweets)
 })
